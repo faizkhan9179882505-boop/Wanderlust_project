@@ -43,11 +43,22 @@ module.exports.createListing = async (req, res) => {
     let lat = null, lng = null;
     if (location && country) {
       const address = encodeURIComponent(`${location}, ${country}`);
-      const response = await fetch(
-        `https://nominatim.openstreetmap.org/search?format=json&q=${address}`,
-        { headers: { "User-Agent": "MyAirbnbApp/1.0" } }
-      );
-      const data = await response.json();
+     const response = await fetch(
+  `https://nominatim.openstreetmap.org/search?format=json&q=${address}`,
+  {
+    headers: {
+      "User-Agent": "wanderlust-app (faiz.dev@demo.com)"
+    }
+  }
+);
+
+if (!response.ok) {
+  const text = await response.text();
+  console.log("Geocoding ERROR:", text);
+  throw new Error("Geocoding failed");
+}
+
+const data = await response.json();
       if (data && data.length > 0) {
         lat = parseFloat(data[0].lat);
         lng = parseFloat(data[0].lon);
