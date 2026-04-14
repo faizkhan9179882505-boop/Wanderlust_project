@@ -45,7 +45,9 @@ module.exports.createListing = async (req, res) => {
       const address = encodeURIComponent(`${location}, ${country}`);
       const response = await fetch(
         `https://nominatim.openstreetmap.org/search?format=json&q=${address}`,
-        { headers: { "User-Agent": "MyAirbnbApp/1.0" } }
+        { headers: {
+  "User-Agent": "wanderlust-app (faiz.dev@demo.com)"
+} }
       );
       const data = await response.json();
       if (data && data.length > 0) {
