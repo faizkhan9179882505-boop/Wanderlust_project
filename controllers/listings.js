@@ -41,19 +41,20 @@ module.exports.createListing = async (req, res) => {
 
     //  Geocode location
    let lat = null, lng = null;
-    if (location && country) {
-      const address = encodeURIComponent(`${location}, ${country}`);
-      const response = await fetch(
-        `https://nominatim.openstreetmap.org/search?format=json&q=${address}`,
-        { headers: { "User-Agent": "MyAirbnbApp/1.0" } }
-      );
+   if (location && country) {
+  const address = encodeURIComponent(`${location}, ${country}`);
+  
+  const response = await fetch(
+    `https://us1.locationiq.com/v1/search.php?key=${process.env.LOCATIONIQ_KEY}&format=json&q=${address}`
+  );
 
   const data = await response.json();
-      if (data && data.length > 0) {
-        lat = parseFloat(data[0].lat);
-        lng = parseFloat(data[0].lon);
-      }
-    }
+
+  if (data && data.length > 0) {
+    lat = parseFloat(data[0].lat);
+    lng = parseFloat(data[0].lon);
+  }
+}
 
     // Save listing
     const newListing = new Listing({
@@ -98,18 +99,20 @@ module.exports.updateListing = async (req, res) => {
 
     // Update lat/lng if location/country changed
     const { location, country } = req.body.listing;
-    if (location && country) {
-      const address = encodeURIComponent(`${location}, ${country}`);
-      const response = await fetch(
-        `https://nominatim.openstreetmap.org/search?format=json&q=${address}`,
-         { headers: { "User-Agent": "MyAirbnbApp/1.0" } }
-      );
-      const data = await response.json();
-      if (data && data.length > 0) {
-        listing.lat = parseFloat(data[0].lat);
-        listing.lng = parseFloat(data[0].lon);
-      }
-    }
+if (location && country) {
+  const address = encodeURIComponent(`${location}, ${country}`);
+  
+  const response = await fetch(
+    `https://us1.locationiq.com/v1/search.php?key=${process.env.LOCATIONIQ_KEY}&format=json&q=${address}`
+  );
+
+  const data = await response.json();
+
+  if (data && data.length > 0) {
+    listing.lat = parseFloat(data[0].lat);
+    listing.lng = parseFloat(data[0].lon);
+  }
+}
 
     await listing.save();
     req.flash("success", "Listing Updated!");
